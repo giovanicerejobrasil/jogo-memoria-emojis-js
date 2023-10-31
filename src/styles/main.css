@@ -69,7 +69,6 @@ body {
 }
 
 .item::after {
-  opacity: .7;
   content: '';
   position: absolute;
   inset: 0;
