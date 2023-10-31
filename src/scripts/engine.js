@@ -1,56 +1,81 @@
-const emojis = [
-  "😍",
-  "😍",
-  "😪",
-  "😪",
-  "🙈",
-  "🙈",
-  "🦄",
-  "🦄",
-  "🎈",
-  "🎈",
-  "🍜",
-  "🍜",
-  "💵",
-  "💵",
-  "🥨",
-  "🥨",
-];
-let openCards = [];
-
-let shuffleEmojis = emojis.sort(() => (Math.random() > 0.5 ? 2 : -1));
-
-for (let i = 0; i < emojis.length; i++) {
-  let box = document.createElement("div");
-  box.className = "item";
-  box.innerHTML = shuffleEmojis[i];
-  box.onclick = handleClick;
-  document.querySelector(".game").appendChild(box);
-}
+const state = {
+  views: {
+    game: document.querySelector(".game"),
+  },
+  values: {
+    emojis: [
+      "😍",
+      "😍",
+      "😪",
+      "😪",
+      "🙈",
+      "🙈",
+      "🦄",
+      "🦄",
+      "🎈",
+      "🎈",
+      "🍜",
+      "🍜",
+      "💵",
+      "💵",
+      "🥨",
+      "🥨",
+    ],
+    openCards: [],
+    isPlaying: false,
+  },
+};
 
 function handleClick() {
-  if (openCards.length < 2) {
-    this.classList.add("boxOpen");
-    openCards.push(this);
-  }
+  if (state.values.isPlaying) {
+    if (state.values.openCards.length < 2) {
+      this.classList.add("boxOpen");
+      state.values.openCards.push(this);
+    }
 
-  if (openCards.length == 2) {
-    setTimeout(checkMatch, 500);
+    if (state.values.openCards.length == 2) {
+      setTimeout(checkMatch, 500);
+    }
   }
 }
 
 function checkMatch() {
-  if (openCards[0].innerHTML === openCards[1].innerHTML) {
-    openCards[0].classList.add("boxMatch");
-    openCards[1].classList.add("boxMatch");
+  if (
+    state.values.openCards[0].innerHTML === state.values.openCards[1].innerHTML
+  ) {
+    state.values.openCards[0].classList.add("boxMatch");
+    state.values.openCards[1].classList.add("boxMatch");
   } else {
-    openCards[0].classList.remove("boxOpen");
-    openCards[1].classList.remove("boxOpen");
+    state.values.openCards[0].classList.remove("boxOpen");
+    state.values.openCards[1].classList.remove("boxOpen");
   }
 
-  openCards = [];
+  state.values.openCards = [];
 
-  if (document.querySelectorAll(".boxMatch").length === emojis.length) {
+  if (
+    document.querySelectorAll(".boxMatch").length === state.values.emojis.length
+  ) {
+    state.values.isPlaying = false;
     alert("Você venceu!");
   }
 }
+
+function initialize() {
+  if (!state.values.isPlaying) {
+    state.values.isPlaying = true;
+    let shuffleEmojis = state.values.emojis.sort(() =>
+      Math.random() > 0.5 ? 2 : -1
+    );
+
+    for (let i = 0; i < state.values.emojis.length; i++) {
+      let box = document.createElement("div");
+      box.className = "item";
+      box.innerHTML = shuffleEmojis[i];
+      box.onclick = handleClick;
+
+      state.views.game.appendChild(box);
+    }
+  }
+}
+
+initialize();
